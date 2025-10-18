@@ -87,7 +87,7 @@ jobs:
           shopt -s nullglob
           for SITEIDX in apps/*/site/index.html ; do
             APPNAME=$(basename "$(dirname "$SITEIDX")")
-            PREVIEW="/apps/${APPNAME}/site/"
+            PREVIEW="apps/${APPNAME}/site/"
             SOURCE="https://github.com/${GITHUB_REPOSITORY}/tree/main/apps/${APPNAME}"
             ITEM="<li><a href=\"${PREVIEW}\" target=\"_blank\">${APPNAME} 預覽</a> · <a href=\"${SOURCE}\" target=\"_blank\">原始碼</a></li>"
             LIST_ITEMS="${LIST_ITEMS}\n        ${ITEM}"
