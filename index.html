@@ -1,151 +1,125 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ThomasHub｜Apps Hub</title>
-    <style>
-        :root {
-            --cream-gold: #d4af37;
-            --forest-green: #7C9B7A;
-            --warm-gray: #f7f5f2;
-            --text: #2f2f2f;
-            --muted: #666
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ThomasHub｜資料驅動 × 溫暖療癒</title>
+  <style>
+    :root {
+      --gold: #d4af37;
+      --green: #7C9B7A;
+      --warm-gray: #f5f3f0;
+      --text-dark: #2f2f2f;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0
-        }
+    body {
+      font-family: 'Noto Sans TC', 'Segoe UI', sans-serif;
+      background: var(--warm-gray);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
 
-        body {
-            background: var(--warm-gray);
-            color: var(--text);
-            font-family: "Noto Sans TC", "Segoe UI", system-ui, sans-serif;
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column
-        }
+    header {
+      width: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--green));
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
 
-        header {
-            background: linear-gradient(135deg, var(--forest-green), var(--cream-gold));
-            color: #fff;
-            text-align: center;
-            padding: 2.5rem 1rem 2rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, .1)
-        }
+    header h1 {
+      font-size: 2.2rem;
+      margin: 0;
+      letter-spacing: 1px;
+    }
 
-        header h1 {
-            font-size: 2rem;
-            letter-spacing: .5px;
-            margin-bottom: .5rem
-        }
+    header p {
+      margin: 0.5rem 0 0;
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
 
-        header p {
-            opacity: .92
-        }
+    main {
+      width: 100%;
+      max-width: 800px;
+      background: white;
+      margin: 2rem auto;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
 
-        main {
-            flex: 1;
-            max-width: 960px;
-            margin: 2rem auto;
-            padding: 1rem;
-            width: 100%
-        }
+    h2 {
+      color: var(--green);
+      border-left: 5px solid var(--gold);
+      padding-left: 0.5rem;
+      margin-bottom: 1rem;
+    }
 
-        .card {
-            background: #fff;
-            border-radius: 1rem;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, .05);
-            padding: 1.5rem 2rem;
-            border: 1px solid rgba(0, 0, 0, .05)
-        }
+    ul {
+      list-style: none;
+      padding-left: 1rem;
+      line-height: 1.8;
+    }
 
-        h2 {
-            color: var(--forest-green);
-            border-left: 4px solid var(--cream-gold);
-            padding-left: .5rem;
-            margin-bottom: 1rem
-        }
+    ul li {
+      margin: 0.5rem 0;
+    }
 
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: grid;
-            gap: 10px
-        }
+    ul li a {
+      text-decoration: none;
+      color: var(--green);
+      font-weight: 600;
+      transition: color 0.2s;
+    }
 
-        li {
-            background: #fff;
-            border: 1px solid rgba(0, 0, 0, .06);
-            border-radius: .6rem;
-            padding: .8rem 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center
-        }
+    ul li a:hover {
+      color: var(--gold);
+    }
 
-        li:hover {
-            background: rgba(212, 175, 55, .08)
-        }
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
 
-        a {
-            color: var(--forest-green);
-            text-decoration: none;
-            font-weight: 500
-        }
+    footer span {
+      color: var(--gold);
+    }
 
-        a:hover {
-            color: var(--cream-gold);
-            text-decoration: underline
-        }
-
-        .meta {
-            text-align: right;
-            margin-top: 1.5rem;
-            color: var(--muted);
-            font-size: .85rem
-        }
-
-        footer {
-            text-align: center;
-            color: var(--muted);
-            font-size: .9rem;
-            padding: 1rem;
-            border-top: 1px dashed rgba(0, 0, 0, .1);
-            background: rgba(255, 255, 255, .5)
-        }
-
-        code {
-            background: rgba(0, 0, 0, .06);
-            padding: 2px 6px;
-            border-radius: 6px
-        }
-    </style>
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.8rem; }
+      main { margin: 1.2rem; padding: 1.5rem; }
+    }
+  </style>
 </head>
 
 <body>
-    <header>
-        <h1>🌿 ThomasHub</h1>
-        <p>資料驅動 × 溫暖療癒｜單一分支多 App 的導覽中樞</p>
-    </header>
+  <header>
+    <h1>ThomasHub</h1>
+    <p>資料驅動 × 溫暖療癒 的創作中心</p>
+  </header>
 
-    <main>
-        <section class="card">
-            <h2>📂 應用清單</h2>
-            <!-- 👇 這個 <ul> 區塊會被 workflow 自動覆寫（只覆寫這一段） -->
-            <ul>
-                <li>首次建立中…請 push 到 <code>apps/&lt;app&gt;/src</code> 或加上打包流程</li>
-            </ul>
-            <div class="meta">Updated: 初始版本</div>
-        </section>
-    </main>
+  <main>
+    <h2>🚀 我的 WebApps</h2>
+    <ul>
+      <li>（系統將在此自動生成 App 清單）</li>
+    </ul>
+    <p style="margin-top: 2rem; font-size: 0.9rem; color: #666;">
+      Updated: 2025-10-18 22:45 UTC
+    </p>
+  </main>
 
-    <footer>© 2025 Thomas｜資料驅動 × 溫暖療癒</footer>
+  <footer>
+    © 2025 <span>Thomas Tsao</span>｜GitHub Pages 自動部署版
+  </footer>
 </body>
-
 </html>
