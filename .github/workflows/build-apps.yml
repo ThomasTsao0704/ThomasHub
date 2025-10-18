@@ -44,17 +44,43 @@ jobs:
             mkdir -p "$SITE"
 
             if [[ -f "$PKG" ]] && jq -e '.scripts.build' "$PKG" >/dev/null 2>&1; then
+              echo "==> Building $APPNAME"
+
               pushd "$APPDIR" >/dev/null
-              npm ci
-              npm run build
+
+              # ---- Package manager detection ----
+              if [[ -f pnpm-lock.yaml ]]; then
+                corepack enable pnpm >/dev/null 2>&1 || true
+                pnpm install --frozen-lockfile || pnpm install
+                BUILD_CMD="pnpm run build"
+              elif [[ -f yarn.lock ]]; then
+                corepack enable yarn >/dev/null 2>&1 || true
+                yarn install --frozen-lockfile || yarn install
+                BUILD_CMD="yarn build"
+              else
+                if [[ -f package-lock.json ]]; then
+                  npm ci
+                else
+                  npm install
+                fi
+                BUILD_CMD="npm run build"
+              fi
+
+              # ---- Run build ----
+              bash -lc "$BUILD_CMD"
+
               popd >/dev/null
+
+              # ---- Pick output folder or fallback to src ----
               OUT=""
               for CAND in dist out build; do
                 if [[ -d "$APPDIR/$CAND" ]]; then OUT="$APPDIR/$CAND"; break; fi
               done
               [[ -z "$OUT" ]] && OUT="$SRC"
-              cp -r "$OUT"/. "$SITE"/
+              [[ -d "$OUT" ]] && cp -r "$OUT"/. "$SITE"/
+
             else
+              echo "==> $APPNAME has no build script; copying src to site"
               [[ -d "$SRC" ]] && cp -r "$SRC"/. "$SITE"/ || true
             fi
 
