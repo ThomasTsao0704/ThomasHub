@@ -46,7 +46,7 @@ jobs:
             mkdir -p "$SITE"
 
             if [[ -f "$PKG" ]] && jq -e '.scripts.build' "$PKG" >/dev/null 2>&1; then
-              echo "    - Found build script. Building…"
+              echo "    - Found build script. Building..."
               pushd "$APPDIR" >/dev/null
               npm ci
               npm run build
@@ -59,7 +59,7 @@ jobs:
               [[ -z "$OUT" ]] && OUT="$SRC"
               cp -r "$OUT"/. "$SITE"/
             else
-              echo "    - No build step. Copying /src → /site"
+              echo "    - No build step. Copying /src -> /site"
               [[ -d "$SRC" ]] && cp -r "$SRC"/. "$SITE"/ || true
             fi
 
@@ -72,40 +72,43 @@ EOF
             fi
           done
 
-      - name: Regenerate Hub index.html (preserve your brand frame)
+      - name: Regenerate Hub index.html (preserve brand frame)
         shell: bash
         run: |
           set -euo pipefail
 
-          # Build the list of app links
+          # Build list of app links
           LIST_ITEMS=""
           shopt -s nullglob
           for SITEIDX in apps/*/site/index.html ; do
-            APPNAME=$(basename "$(dirname "$SITEIDX")")   # apps/<app>/site/index.html → <app>
+            APPNAME=$(basename "$(dirname "$SITEIDX")")
             PREVIEW="/apps/${APPNAME}/site/"
             SOURCE="https://github.com/${GITHUB_REPOSITORY}/tree/main/apps/${APPNAME}"
             ITEM="<li><a href=\"${PREVIEW}\" target=\"_blank\">${APPNAME} 預覽</a> · <a href=\"${SOURCE}\" target=\"_blank\">原始碼</a></li>"
             LIST_ITEMS="${LIST_ITEMS}\n        ${ITEM}"
           done
 
-          # Fallback if no apps
           if [[ -z "$LIST_ITEMS" ]]; then
             LIST_ITEMS="\n        <li>尚無可列出 App；請在 <code>apps/&lt;app&gt;/src</code> 放入內容或加入打包流程。</li>"
           fi
 
-          # Use Python to safely replace the first <ul>…</ul> and the first "Updated:" text
-          python3 - <<'PY'
-import re, datetime
-from pathlib import Path
-p = Path("index.html")
-html = p.read_text(encoding="utf-8")
-html = re.sub(r"<ul>.*?</ul>", "<ul>\nREPLACE_LIST\n      </ul>", html, count=1, flags=re.S)
-html = re.sub(r"Updated:[^<]*", "Updated: "+datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"), html, count=1)
-p.write_text(html, encoding="utf-8")
-PY
+          # Write list to a temp file to avoid quoting issues
+          printf "%b" "$LIST_ITEMS" > list.html
 
-          # Replace placeholder with computed list (escape / for sed)
-          sed -i "0,/REPLACE_LIST/s//${LIST_ITEMS//\//\\/}/" index.html
+          # Python safely replaces the first <ul>...</ul> and the first "Updated:" text
+          python3 - <<'PY'
+import re, datetime, sys
+from pathlib import Path
+
+idx = Path("index.html")
+html = idx.read_text(encoding="utf-8")
+
+lst = Path("list.html").read_text(encoding="utf-8")
+html = re.sub(r"<ul>.*?</ul>", "<ul>\n" + lst + "\n      </ul>", html, count=1, flags=re.S)
+html = re.sub(r"Updated:[^<]*", "Updated: " + datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"), html, count=1)
+
+idx.write_text(html, encoding="utf-8")
+PY
 
       - name: Commit & push changes
         uses: stefanzweifel/git-auto-commit-action@v5
