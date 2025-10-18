@@ -1,15 +1,11 @@
-import { defineConfig } from "vite";
-import { resolve } from "path";
+import { defineConfig } from 'vite'
 
 export default defineConfig({
-    root: ".",                       // 專案根目錄
-    base: "./",                      // 使用相對路徑，避免 Pages 404
-    build: {
-        outDir: "dist",                // 預設輸出資料夾
-        emptyOutDir: true,
-        rollupOptions: {
-            input: resolve(__dirname, "index.html"),
-        },
-    },
-    server: { port: 5173 }
-});
+  root: '.', // 專案根目錄是當前資料夾
+  build: {
+    outDir: 'site',
+    rollupOptions: {
+      input: 'index.html'
+    }
+  }
+})
