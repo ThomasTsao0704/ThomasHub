@@ -1,132 +1,396 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ThomasHub｜資料驅動 × 溫暖療癒</title>
-  <style>
-    :root {
-      --gold: #d4af37;
-      --green: #7C9B7A;
-      --warm-gray: #f5f3f0;
-      --text-dark: #2f2f2f;
-    }
+    <meta charset="UTF-8" />
+    <title>台股分析系統</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/app.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Noto Sans TC', 'Segoe UI', sans-serif;
-      background: var(--warm-gray);
-      color: var(--text-dark);
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    header {
-      width: 100%;
-      background: linear-gradient(90deg, var(--gold), var(--green));
-      color: white;
-      text-align: center;
-      padding: 2rem 1rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
 
-    header h1 {
-      font-size: 2.2rem;
-      margin: 0;
-      letter-spacing: 1px;
-    }
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    header p {
-      margin: 0.5rem 0 0;
-      font-size: 1.1rem;
-      opacity: 0.9;
-    }
+        .app-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
 
-    main {
-      width: 100%;
-      max-width: 800px;
-      background: white;
-      margin: 2rem auto;
-      padding: 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+        .status-indicator {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            background: rgba(255,255,255,0.2);
+        }
 
-    h2 {
-      color: var(--green);
-      border-left: 5px solid var(--gold);
-      padding-left: 0.5rem;
-      margin-bottom: 1rem;
-    }
+        .status-indicator.online {
+            background: rgba(76, 175, 80, 0.3);
+            color: #a5d6a7;
+        }
 
-    ul {
-      list-style: none;
-      padding-left: 1rem;
-      line-height: 1.8;
-    }
+        .status-indicator.offline {
+            background: rgba(244, 67, 54, 0.3);
+            color: #ef9a9a;
+        }
 
-    ul li {
-      margin: 0.5rem 0;
-    }
+        .main-content {
+            display: flex;
+            min-height: 600px;
+        }
 
-    ul li a {
-      text-decoration: none;
-      color: var(--green);
-      font-weight: 600;
-      transition: color 0.2s;
-    }
+        .sidebar {
+            width: 220px;
+            background: #f5f5f5;
+            padding: 20px;
+            border-right: 1px solid #e0e0e0;
+        }
 
-    ul li a:hover {
-      color: var(--gold);
-    }
+        .nav-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border: none;
+            background: white;
+            color: #333;
+            text-align: left;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
 
-    .meta {
-      margin-top: 2rem;
-      font-size: 0.9rem;
-      color: #666;
-      text-align: right;
-    }
+        .nav-btn:hover {
+            background: #e3f2fd;
+            transform: translateX(4px);
+        }
 
-    footer {
-      text-align: center;
-      padding: 1.5rem;
-      font-size: 0.9rem;
-      color: #555;
-    }
+        .nav-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 500;
+        }
 
-    footer span {
-      color: var(--gold);
-    }
+        .content-area {
+            flex: 1;
+            padding: 30px;
+        }
 
-    @media (max-width: 600px) {
-      header h1 { font-size: 1.8rem; }
-      main { margin: 1.2rem; padding: 1.5rem; }
-    }
-  </style>
+        .view-section {
+            display: none;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .input-group input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-primary {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        #stockInfo, #statsContainer, #dataTable,
+        #analysisResults, #dailyResults, #compareResults {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .error {
+            color: #d32f2f;
+            padding: 15px;
+            background: #ffebee;
+            border-radius: 8px;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .app-footer {
+            background: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+            .nav-btn {
+                display: inline-block;
+                width: auto;
+                margin-right: 8px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-  <header>
-    <h1>ThomasHub</h1>
-    <p>資料驅動 × 溫暖療癒 的創作中心</p>
-  </header>
 
-  <main>
-    <h2>🚀 我的 WebApps</h2>
-    <ul>
-      <li><a href="apps/audio/site/" target="_blank">audio Preview</a> · <a href="https://github.com/ThomasTsao/ThomasHub/tree/main/apps/audio" target="_blank">Source</a></li>
-      <li><a href="apps/recipes/site/" target="_blank">recipes Preview</a> · <a href="https://github.com/ThomasTsao/ThomasHub/tree/main/apps/recipes" target="_blank">Source</a></li>
-      <li><a href="apps/stocks/site/" target="_blank">stocks Preview</a> · <a href="https://github.com/ThomasTsao/ThomasHub/tree/main/apps/stocks" target="_blank">Source</a></li>
-    </ul>
-    <div class="meta">Updated: 2025-10-18 16:33 UTC</div>
-  </main>
+<div class="app-container">
+    <header class="app-header">
+        <h1>📈 台股分析系統</h1>
+        <span id="apiStatus" class="status-indicator"></span>
+    </header>
 
-  <footer>
-    © 2025 <span>Thomas Tsao</span>｜GitHub Pages 自動部署版
-  </footer>
+    <main class="main-content">
+        <aside class="sidebar">
+            <button data-view="stock" class="nav-btn active">股票查詢</button>
+            <button data-view="analysis" class="nav-btn">區間分析</button>
+            <button data-view="daily" class="nav-btn">每日行情</button>
+            <button data-view="compare" class="nav-btn">股票比較</button>
+            <button data-view="extra1" class="nav-btn">新增紀錄分析</button>
+            <button data-view="extra2" class="nav-btn">瀏覽紀錄分析</button>
+        </aside>
+
+        <section class="content-area">
+
+            <!-- 股票查詢視圖 -->
+            <section id="stockView" class="view-section">
+                <div id="preMarketBrief"></div>
+
+                <div class="input-group">
+                    <input id="stockCode" type="text" placeholder="請輸入股票代碼 (例: 2330)" />
+                    <button id="btnLoadStock" class="btn-primary">查詢</button>
+                </div>
+
+                <div id="stockInfo"></div>
+                <div id="statsContainer"></div>
+                <div id="dataTable"></div>
+            </section>
+
+            <!-- 區間分析視圖 -->
+            <section id="analysisView" class="view-section" style="display:none">
+                <div class="input-group">
+                    <input id="analysisCode" type="text" placeholder="股票代碼 (例: 2330)" />
+                    <input id="startDate" type="date" />
+                    <input id="endDate" type="date" />
+                    <button id="btnRange" class="btn-primary">分析</button>
+                </div>
+                <div id="analysisResults"></div>
+            </section>
+
+            <!-- 每日行情視圖 -->
+            <section id="dailyView" class="view-section" style="display:none">
+                <div class="input-group">
+                    <input id="dailyDate" type="date" />
+                    <button id="btnDaily" class="btn-primary">查詢</button>
+                </div>
+                <div id="dailyResults"></div>
+            </section>
+
+            <!-- 股票比較視圖 -->
+            <section id="compareView" class="view-section" style="display:none">
+                <div class="input-group">
+                    <input id="compareCodes" type="text" placeholder="多檔股票代碼，逗號分隔 (例: 2330,2317,2454)" />
+                    <button id="btnCompare" class="btn-primary">比較</button>
+                </div>
+                <div id="compareResults"></div>
+            </section>
+
+            <!-- 空白分頁 1 -->
+            <section id="extra1View" class="view-section" style="display:none">
+                <h2>新增紀錄分析</h2>
+                <form id="notesAddForm">
+                    <div class="form-grid">
+                        <div class="field">
+                            <label>日期 <span style="color: red;">*</span></label>
+                            <input id="notesDate" type="date" required />
+                        </div>
+                        <div class="field">
+                            <label>股票代號 <span style="color: red;">*</span></label>
+                            <input id="notesCode" type="text" placeholder="例如 2330" required />
+                        </div>
+                        <div class="field">
+                            <label>股票名稱</label>
+                            <input id="notesName" type="text" placeholder="例如 台積電" />
+                        </div>
+                        <div class="field">
+                            <label>信心度</label>
+                            <input id="notesConfidence" type="number" min="1" max="10" step="1" value="5" />
+                        </div>
+                        <div class="field">
+                            <label>目標價</label>
+                            <input id="notesTarget" type="number" step="0.01" placeholder="例如 1050" />
+                        </div>
+                        <div class="field">
+                            <label>停損價</label>
+                            <input id="notesStop" type="number" step="0.01" placeholder="例如 980" />
+                        </div>
+                        <div class="field">
+                            <label>預判</label>
+                            <input id="notesPrediction" type="text" placeholder="例如 突破均線" />
+                        </div>
+                        <div class="field">
+                            <label>策略標籤</label>
+                            <input id="notesTags" type="text" placeholder="例如 波段,均線" />
+                        </div>
+                        <div class="field">
+                            <label>市場情緒</label>
+                            <input id="notesMood" type="text" placeholder="例如 樂觀" />
+                        </div>
+                        <div class="field">
+                            <label>參考指標</label>
+                            <input id="notesReference" type="text" placeholder="例如 MA20,成交量" />
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>分析內容 <span style="color: red;">*</span></label>
+                        <textarea id="notesAnalysis" required placeholder="請輸入分析內容"></textarea>
+                    </div>
+                    <div class="field">
+                        <label>備註</label>
+                        <textarea id="notesNotes" placeholder="補充說明"></textarea>
+                    </div>
+
+                    <div class="notes-actions">
+                        <button type="submit" class="btn-primary">新增紀錄</button>
+                        <button type="button" id="btnNotesExport" class="btn-primary btn-secondary">下載 notes.csv</button>
+                        <button type="button" id="btnNotesReload" class="btn-primary btn-secondary">重新載入</button>
+                    </div>
+                    <p class="helper-text">資料來源固定使用 /data/notes.csv，新加入紀錄會暫存在本機，請下載後自行覆蓋。</p>
+                </form>
+
+                <div id="notesAddSummary"></div>
+                <div id="notesAddTable"></div>
+            </section>
+
+            <!-- 空白分頁 2 -->
+            <section id="extra2View" class="view-section" style="display:none">
+                <h2>瀏覽紀錄分析</h2>
+                <div class="form-grid">
+                    <div class="field">
+                        <label>股票代號</label>
+                        <select id="notesFilterCode">
+                            <option value="">全部</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>策略標籤</label>
+                        <select id="notesFilterTag">
+                            <option value="">全部</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>市場情緒</label>
+                        <select id="notesFilterMood">
+                            <option value="">全部</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>最低信心度</label>
+                        <select id="notesFilterConfidence">
+                            <option value="0">不限</option>
+                            <option value="1">1+</option>
+                            <option value="2">2+</option>
+                            <option value="3">3+</option>
+                            <option value="4">4+</option>
+                            <option value="5">5+</option>
+                            <option value="6">6+</option>
+                            <option value="7">7+</option>
+                            <option value="8">8+</option>
+                            <option value="9">9+</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="notes-actions">
+                    <button type="button" id="btnNotesExportBrowse" class="btn-primary btn-secondary">下載 notes.csv</button>
+                    <button type="button" id="btnNotesReloadBrowse" class="btn-primary btn-secondary">重新載入</button>
+                </div>
+
+                <div id="notesBrowseSummary"></div>
+                <div id="confidenceCalibration"></div>
+                <div id="notesBrowseTable"></div>
+            </section>
+
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>台股分析系統 v2.0 | 資料僅供參考</p>
+    </footer>
+</div>
+<script type="module" src="/static/js/app.js"></script>
 </body>
 </html>
