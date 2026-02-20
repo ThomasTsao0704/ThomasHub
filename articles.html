@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>觀點文章 | Thomas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Thomas 的觀點文章 — 公共政策、金融制度與科技發展的獨立分析" />
+
+    <style>
+        /* ════════════════════════════════════════
+           設計語言：深海夜藍 × 星際灰
+           核心理念：文字呼吸感、層次感、閱讀舒適度
+           ════════════════════════════════════════ */
+        :root {
+            /* 背景系 — 深邃不壓抑的深海藍 */
+            --bg-primary:    #070b13;
+            --bg-secondary:  #0a0f1c;
+            --panel:         #0d1525;
+            --panel-hover:   #111e33;
+            --drawer-bg:     #0c1422;
+            --drawer-inner:  #0f1829;
+
+            /* 文字系 — 溫潤藍灰，不刺眼 */
+            --text-heading:  #dce9f8;
+            --text-primary:  #c8dbed;
+            --text-body:     #8faec6;
+            --text-muted:    #4d6a85;
+            --text-dim:      #324d65;
+
+            /* 強調色 — 星光藍 */
+            --accent:        #5b8dee;
+            --accent-bright: #82aef5;
+            --accent-soft:   rgba(91, 141, 238, 0.10);
+            --accent-glow:   rgba(91, 141, 238, 0.18);
+
+            /* 分類色 */
+            --policy-color:  #34d399;
+            --finance-color: #5b8dee;
+            --tech-color:    #fbbf24;
+            --tag-policy:    rgba(52, 211, 153, 0.10);
+            --tag-finance:   rgba(91, 141, 238, 0.10);
+            --tag-tech:      rgba(251, 191, 36, 0.10);
+
+            /* 邊框 */
+            --border:        #172036;
+            --border-soft:   #1f2f48;
+
+            /* 漸層輔助 */
+            --grad-a: rgba(91, 141, 238, 0.13);
+            --grad-b: rgba(130, 174, 245, 0.04);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                "PingFang TC", "Microsoft JhengHei", "微軟正黑體",
+                "Noto Sans TC", sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.75;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── 背景裝飾 ── */
+        .background-gradient {
+            position: fixed; inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 15% 8%,  var(--grad-a), transparent),
+                radial-gradient(ellipse 50% 40% at 85% 92%, var(--grad-b), transparent),
+                var(--bg-primary);
+            z-index: -1;
+        }
+        .background-grid {
+            position: fixed; inset: 0;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 48px 48px;
+            opacity: 0.25; z-index: -1;
+        }
+
+        /* ── Nav ── */
+        nav {
+            position: sticky; top: 0;
+            backdrop-filter: blur(16px) saturate(1.4);
+            background: rgba(7, 11, 19, 0.82);
+            border-bottom: 1px solid var(--border);
+            z-index: 100; padding: 15px 0;
+        }
+        nav .container {
+            max-width: 1200px; margin: 0 auto; padding: 0 28px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        nav .logo {
+            font-size: 1.2rem; font-weight: 700;
+            color: var(--accent); text-decoration: none;
+            display: flex; align-items: center; gap: 8px;
+            letter-spacing: -0.3px;
+        }
+        nav .nav-links { display: flex; gap: 28px; align-items: center; }
+        nav a {
+            color: var(--text-body); text-decoration: none;
+            font-size: 0.92rem; transition: color 0.25s;
+            letter-spacing: 0.1px;
+        }
+        nav a:hover, nav a.active { color: var(--accent-bright); }
+
+        /* ── Page Header ── */
+        .page-header {
+            padding: 72px 28px 48px;
+            max-width: 1200px; margin: 0 auto;
+        }
+        .page-header .eyebrow {
+            font-size: 0.75rem; letter-spacing: 3.5px; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 14px; opacity: 0.8;
+        }
+        .page-header h1 {
+            font-size: clamp(1.9rem, 4vw, 2.7rem);
+            letter-spacing: -1.2px; font-weight: 800;
+            background: linear-gradient(130deg, var(--text-heading) 40%, var(--accent-bright));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 14px;
+        }
+        .page-header p {
+            color: var(--text-body); font-size: 1rem;
+            max-width: 560px; line-height: 1.9;
+        }
+
+        /* ── 篩選列 ── */
+        .filter-bar {
+            max-width: 1200px; margin: 0 auto 36px;
+            padding: 0 28px;
+            display: flex; gap: 8px; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 6px 16px; border-radius: 20px; font-size: 0.83rem;
+            font-weight: 500; cursor: pointer;
+            border: 1px solid var(--border-soft);
+            background: transparent; color: var(--text-body);
+            transition: all 0.2s; letter-spacing: 0.2px;
+        }
+        .filter-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent-bright);
+            background: var(--accent-soft);
+        }
+        .filter-btn.active         { background: var(--accent);        border-color: var(--accent);        color: #fff; }
+        .filter-btn.active-policy  { background: var(--policy-color);  border-color: var(--policy-color);  color: #051a10; }
+        .filter-btn.active-finance { background: var(--finance-color); border-color: var(--finance-color); color: #fff; }
+        .filter-btn.active-tech    { background: var(--tech-color);    border-color: var(--tech-color);    color: #1a1000; }
+
+        /* ── 文章索引卡 ── */
+        .article-index {
+            max-width: 1200px; margin: 0 auto;
+            padding: 0 28px 88px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 18px;
+        }
+        .index-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-left: 3px solid transparent;
+            border-radius: 14px; padding: 26px;
+            transition: border-color 0.25s, background 0.25s,
+                        transform 0.25s, box-shadow 0.25s;
+            cursor: pointer;
+            display: flex; flex-direction: column; gap: 11px;
+            text-decoration: none;
+        }
+        .index-card:hover {
+            background: var(--panel-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+        }
+        .index-card[data-category="policy"]:hover  {
+            border-left-color: var(--policy-color);
+            border-color: rgba(52, 211, 153, 0.35);
+        }
+        .index-card[data-category="finance"]:hover {
+            border-left-color: var(--finance-color);
+            border-color: rgba(91, 141, 238, 0.35);
+        }
+        .index-card[data-category="tech"]:hover    {
+            border-left-color: var(--tech-color);
+            border-color: rgba(251, 191, 36, 0.35);
+        }
+        .index-card .card-title {
+            font-size: 1.02rem; font-weight: 650;
+            color: var(--text-primary); line-height: 1.55;
+            letter-spacing: -0.1px;
+        }
+        .index-card .card-excerpt {
+            font-size: 0.875rem; color: var(--text-body);
+            line-height: 1.8; flex: 1;
+        }
+        .index-card .card-meta {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.78rem; color: var(--text-muted);
+            padding-top: 12px; border-top: 1px solid var(--border);
+        }
+        .index-card .read-link {
+            color: var(--accent); font-weight: 600; font-size: 0.8rem;
+        }
+
+        /* ── 標籤 ── */
+        .tag {
+            display: inline-block; padding: 3px 10px;
+            border-radius: 5px; font-size: 0.76rem;
+            font-weight: 700; letter-spacing: 0.6px;
+        }
+        .tag-policy  { background: var(--tag-policy);  color: var(--policy-color);  border: 1px solid rgba(52,211,153,0.25); }
+        .tag-finance { background: var(--tag-finance); color: var(--accent-bright);  border: 1px solid rgba(91,141,238,0.25); }
+        .tag-tech    { background: var(--tag-tech);    color: var(--tech-color);     border: 1px solid rgba(251,191,36,0.25); }
+
+        /* ── 隱藏完整文章（僅在 Drawer 顯示）── */
+        .article-section { display: none; }
+        hr.section-divider { display: none; }
+
+        /* ── 文章排版 (用於 Drawer 內) ── */
+        .article-header { margin-bottom: 40px; }
+        .article-header .article-title {
+            font-size: clamp(1.45rem, 3.5vw, 1.95rem);
+            font-weight: 800; line-height: 1.38;
+            letter-spacing: -0.6px;
+            color: var(--text-heading);
+            margin: 14px 0 22px;
+        }
+        .article-meta-row {
+            display: flex; gap: 18px; align-items: center;
+            flex-wrap: wrap; font-size: 0.82rem;
+            color: var(--text-muted);
+            padding-bottom: 26px;
+            border-bottom: 1px solid var(--border);
+        }
+        .article-meta-row span { display: flex; align-items: center; gap: 5px; }
+
+        /* 正文排版 */
+        .article-body {
+            color: var(--text-body);
+            font-size: 1.04rem;
+            line-height: 2.05;
+            letter-spacing: 0.2px;
+        }
+        .article-body h3 {
+            font-size: 1.12rem; font-weight: 700;
+            color: var(--text-primary);
+            margin: 48px 0 16px;
+            padding-left: 14px;
+            border-left: 2px solid var(--accent);
+            letter-spacing: 0.1px;
+        }
+        .article-body p { margin-bottom: 22px; }
+        .article-body p:last-child { margin-bottom: 0; }
+        .article-body strong { color: var(--text-primary); font-weight: 650; }
+        .article-body blockquote {
+            border: none;
+            border-left: 2px solid var(--accent);
+            padding: 18px 26px;
+            margin: 36px 0;
+            background: linear-gradient(
+                to right,
+                rgba(91, 141, 238, 0.07),
+                rgba(91, 141, 238, 0.02) 80%,
+                transparent
+            );
+            border-radius: 0 12px 12px 0;
+            color: var(--text-primary);
+            font-style: italic;
+            font-size: 1.06rem;
+            line-height: 1.9;
+        }
+        .article-body ul, .article-body ol {
+            padding-left: 22px; margin-bottom: 22px;
+        }
+        .article-body li { margin-bottom: 10px; line-height: 1.85; }
+        .article-body li::marker { color: var(--accent); }
+        .article-body .highlight-box {
+            background: linear-gradient(
+                135deg,
+                rgba(91, 141, 238, 0.07),
+                rgba(130, 174, 245, 0.03)
+            );
+            border: 1px solid rgba(91, 141, 238, 0.18);
+            border-top: 2px solid var(--accent);
+            border-radius: 0 0 12px 12px;
+            padding: 22px 26px; margin: 40px 0;
+        }
+        .article-body .highlight-box strong {
+            display: block;
+            color: var(--accent-bright);
+            font-size: 0.74rem; letter-spacing: 1.5px;
+            text-transform: uppercase; margin-bottom: 10px;
+            font-style: normal;
+        }
+
+        /* ── Drawer 遮罩 ── */
+        .drawer-overlay {
+            position: fixed; inset: 0;
+            background: rgba(4, 8, 16, 0.72);
+            backdrop-filter: blur(8px) saturate(0.8);
+            z-index: 200; opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.38s ease;
+        }
+        .drawer-overlay.open { opacity: 1; pointer-events: all; }
+
+        /* ── Drawer 面板 ── */
+        .drawer {
+            position: fixed; top: 0; right: 0;
+            width: min(740px, 100vw);
+            height: 100vh;
+            background: var(--drawer-bg);
+            border-left: 1px solid var(--border-soft);
+            z-index: 201;
+            transform: translateX(100%);
+            transition: transform 0.44s cubic-bezier(0.32, 0, 0.15, 1);
+            display: flex; flex-direction: column;
+            box-shadow: -32px 0 80px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+        }
+        .drawer.open { transform: translateX(0); }
+
+        /* ── 進度條 ── */
+        .drawer-progress {
+            position: absolute; top: 0; left: 0;
+            height: 2px; width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+            transition: width 0.08s linear;
+            z-index: 10;
+        }
+
+        /* ── Drawer 頂部列 ── */
+        .drawer-topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 32px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            background: var(--drawer-bg);
+            gap: 12px;
+        }
+        .drawer-topbar-left {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .drawer-category-badge {
+            font-size: 0.72rem; font-weight: 700;
+            letter-spacing: 0.8px; padding: 3px 9px;
+            border-radius: 5px;
+        }
+        .drawer-category-badge.badge-policy  { background: var(--tag-policy);  color: var(--policy-color);  border: 1px solid rgba(52,211,153,0.25); }
+        .drawer-category-badge.badge-finance { background: var(--tag-finance); color: var(--accent-bright);  border: 1px solid rgba(91,141,238,0.25); }
+        .drawer-category-badge.badge-tech    { background: var(--tag-tech);    color: var(--tech-color);     border: 1px solid rgba(251,191,36,0.25); }
+        .drawer-reading-label {
+            font-size: 0.75rem; letter-spacing: 1.5px;
+            text-transform: uppercase; color: var(--text-dim);
+        }
+        .drawer-close {
+            width: 32px; height: 32px; border-radius: 8px;
+            border: 1px solid var(--border-soft);
+            background: transparent;
+            color: var(--text-muted); font-size: 0.95rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; flex-shrink: 0;
+        }
+        .drawer-close:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+
+        /* ── Drawer 內容捲軸區 ── */
+        .drawer-body {
+            overflow-y: auto; flex: 1;
+            padding: 48px 56px 96px;
+            background: linear-gradient(
+                to bottom,
+                var(--drawer-bg) 0%,
+                var(--drawer-inner) 100%
+            );
+        }
+        .drawer-body::-webkit-scrollbar { width: 5px; }
+        .drawer-body::-webkit-scrollbar-track { background: transparent; }
+        .drawer-body::-webkit-scrollbar-thumb {
+            background: var(--border-soft);
+            border-radius: 4px;
+        }
+        .drawer-body::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* 內容淡入 */
+        @keyframes drawerSlideIn {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .drawer-body.animating > * {
+            animation: drawerSlideIn 0.38s ease both;
+        }
+        .drawer-body.animating > *:nth-child(2) {
+            animation-delay: 0.06s;
+        }
+
+        /* ── Footer ── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 44px 24px 28px; text-align: center;
+        }
+        .footer-content { max-width: 1200px; margin: 0 auto; }
+        .footer-links {
+            display: flex; justify-content: center; gap: 28px;
+            margin-bottom: 22px; flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: var(--text-body); text-decoration: none;
+            font-size: 0.88rem; transition: color 0.25s;
+        }
+        .footer-links a:hover { color: var(--accent-bright); }
+        .footer-copyright { color: var(--text-muted); font-size: 0.83rem; line-height: 2; }
+
+        /* ── 動畫 ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── 響應式 ── */
+        @media (max-width: 768px) {
+            nav .nav-links { gap: 16px; }
+            .page-header { padding: 52px 20px 36px; }
+            .article-index { padding: 0 16px 64px; gap: 14px; }
+        }
+        @media (max-width: 600px) {
+            .drawer-body { padding: 32px 24px 72px; }
+            .drawer-topbar { padding: 14px 20px; }
+        }
+
+        /* ── 捲軸 (頁面) ── */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-soft); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    </style>
+</head>
+
+<body>
+    <div class="background-gradient"></div>
+    <div class="background-grid"></div>
+
+    <!-- Nav -->
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">✍️ Thomas</a>
+            <div class="nav-links">
+                <a href="index.html#about">關於我</a>
+                <a href="articles.html" class="active">觀點文章</a>
+                <a href="index.html#topics">關注議題</a>
+                <a href="https://github.com" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="eyebrow">全部文章</div>
+        <h1>觀點文章</h1>
+        <p>每篇文章都試圖提出一個可被驗證或反駁的具體主張，而非泛泛而談。</p>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">全部（6）</button>
+        <button class="filter-btn" data-filter="policy">📜 公共政策（2）</button>
+        <button class="filter-btn" data-filter="finance">💹 金融制度（2）</button>
+        <button class="filter-btn" data-filter="tech">🖥️ 科技發展（2）</button>
+    </div>
+
+    <!-- Article Index Cards -->
+    <div class="article-index">
+
+        <a class="index-card" href="#art-1" data-category="finance">
+            <span class="tag tag-finance">金融制度</span>
+            <div class="card-title">升息週期結束後，誰會是沉默的輸家？</div>
+            <div class="card-excerpt">利率下行的受益者清晰可見，但它重新定價的風險往往在兩年後才以信用事件的形式出現。</div>
+            <div class="card-meta">
+                <span>2025 · 12 月 · 8 分鐘閱讀</span>
+                <span class="read-link">閱讀全文 →</span>
+            </div>
+        </a>
+
+        <a class="index-card" href="#art-2" data-category="policy">
+            <span class="tag tag-policy">公共政策</span>
+            <div class="card-title">台灣少子化政策的結構性困境：補貼治標，誘因治本</div>
+            <div class="card-excerpt">生育補貼的邊際效用遞減是可預測的。真正壓制生育率的是機會成本，而機會成本由多重制度共同決定。</div>
+            <div class="card-meta">
+                <span>2025 · 10 月 · 11 分鐘閱讀</span>
+                <span class="read-link">閱讀全文 →</span>
+            </div>
+        </a>
+
+        <a class="index-card" href="#art-3" data-category="tech">
+            <span class="tag tag-tech">科技發展</span>
+            <div class="card-title">AI 生產力紅利的分配：誰真的受益了？</div>
+            <div class="card-excerpt">宏觀生產力數據尚未反映 AI 投資，但個別企業的獲利已大幅集中。這個落差本身就是一個制度問題。</div>
+            <div class="card-meta">
+                <span>2025 · 09 月 · 9 分鐘閱讀</span>
+                <span class="read-link">閱讀全文 →</span>
+            </div>
+        </a>
+
+        <a class="index-card" href="#art-4" data-category="policy">
+            <span class="tag tag-policy">公共政策</span>
+            <div class="card-title">能源轉型的財政算術：碳定價的政治經濟學</div>
+            <div class="card-excerpt">碳稅與碳交易的理論效率差異遠小於它們的政治可行性差異。理解這點，才能評估各國氣候政策的真實雄心。</div>
+            <div class="card-meta">
+                <span>2025 · 07 月 · 13 分鐘閱讀</span>
+                <span class="read-link">閱讀全文 →</span>
+            </div>
+        </a>
+
+        <a class="index-card" href="#art-5" data-category="finance">
+            <span class="tag tag-finance">金融制度</span>
+            <div class="card-title">台灣資本市場的深度問題：不是估值，是結構</div>
+            <div class="card-excerpt">「台股折價」的討論通常止於本益比比較。折價的根源在流動性結構、外資限制與法人治理文化。</div>
+            <div class="card-meta">
+                <span>2025 · 05 月 · 10 分鐘閱讀</span>
+                <span class="read-link">閱讀全文 →</span>
+            </div>
+        </a>
+
+        <a class="index-card" href="#art-6" data-category="tech">
+            <span class="tag tag-tech">科技發展</span>
+            <div class="card-title">平台管制的邊界：數位市場中的競爭法困境</div>
+            <div class="card-excerpt">傳統反壟斷框架以價格傷害消費者為核心，但平台競爭的損害形式是資料獨占、生態系封閉與創新窒息。</div>
+            <div class="card-meta">
+                <span>2025 · 03 月 · 12 分鐘閱讀</span>
+                <span class="read-link">閱讀全文 →</span>
+            </div>
+        </a>
+
+    </div>
+
+    <hr class="section-divider" />
+
+    <!-- ═══════════════════════════════════════════
+         Article 1 — 升息週期結束後，誰會是沉默的輸家？
+         ════════════════════════════════════════════ -->
+    <article class="article-section" id="art-1">
+        <div class="article-header">
+            <span class="tag tag-finance">金融制度</span>
+            <h1 class="article-title">升息週期結束後，誰會是沉默的輸家？</h1>
+            <div class="article-meta-row">
+                <span>📅 2025 年 12 月</span>
+                <span>⏱ 約 8 分鐘閱讀</span>
+                <span>✍️ Thomas</span>
+            </div>
+        </div>
+        <div class="article-body">
+            <p>
+                2022 年至 2023 年的快速升息週期，在金融市場製造了一批清晰可見的輸家：長天期公債持有人、
+                高槓桿科技新創、以及矽谷銀行這類將資產組合押注於低利率的機構。
+                這些損失是即時的、可計算的，也因此獲得了足夠的關注與政策回應。
+            </p>
+            <p>
+                但隨著利率在 2024 年底開始轉向，多數市場參與者將注意力移向受益方——
+                抵押貸款市場的解凍、高收益債的息差收窄、以及股票市場的估值重新擴張。
+                這是可以理解的：受益者是立即可見的，而新一批輸家，往往要等兩到三年才會現形。
+            </p>
+
+            <h3>利率下行的隱性機制</h3>
+            <p>
+                當利率快速下行，存在兩類截然不同的資產負債表反應。
+                第一類是「有備而來」的機構：它們在高利率期間已完成了負債結構的調整，
+                手持大量短天期固定利率負債或浮動利率資產，降息對它們而言幾乎是純粹的利好。
+            </p>
+            <p>
+                第二類則是「沉默的持有人」：它們在 2020 至 2021 年的低利率環境中，
+                以長天期浮動利率借入了大量資金，並將這些資金投入了回報週期長達五至十年的資產——
+                房地產開發、基礎設施、或是私募股權投資組合。
+                當利率升高時，它們靠著「還沒到期就還沒損失」的邏輯撐了過來。
+                但降息並不能抹去已經積累的利息負擔，它只是讓後續新增借款變得更便宜。
+            </p>
+
+            <blockquote>
+                「問題不在於升息傷害了誰，而在於升息期間誰選擇了沉默、選擇等待，
+                而等待的代價現在才開始被計算。」
+            </blockquote>
+
+            <h3>三個值得追蹤的脆弱點</h3>
+            <p>根據資金流向與資產負債表結構，以下三個領域的風險值得持續關注：</p>
+            <ul>
+                <li>
+                    <strong>商業不動產再融資缺口：</strong>
+                    2024 至 2026 年有大量商業不動產貸款到期，
+                    其中部分是在 2019 至 2021 年以極低利率承作的五年期貸款。
+                    即使新貸款利率比峰值低，仍遠高於到期貸款的利率，
+                    再融資成本的跳升可能讓本已承壓的辦公室與零售資產出現連鎖拋售。
+                </li>
+                <li>
+                    <strong>私募信貸（Private Credit）的流動性錯配：</strong>
+                    過去五年私募信貸市場規模從不到一兆美元成長至超過兩兆美元。
+                    這類資產以浮動利率貸出，投資人卻往往以為它是「安全的固定收益替代品」。
+                    升息期間的高利息收入掩蓋了底層借款人的信用惡化；
+                    一旦降息壓縮了利息緩衝，違約率將更迅速地反映到資產淨值上。
+                </li>
+                <li>
+                    <strong>新興市場美元債的集中到期：</strong>
+                    許多新興市場政府與企業在 2021 年趁著低利率發行了大量美元計價債券，
+                    到期日集中在 2025 至 2027 年。
+                    即便美元降息，若當地貨幣持續貶值，再融資的實質成本仍可能比表面利率高出許多。
+                </li>
+            </ul>
+
+            <h3>為什麼這次的輸家會「沉默」？</h3>
+            <p>
+                矽谷銀行的倒閉發生在三天之內，損失清晰、責任明確、市場反應即時。
+                但上述三個領域的損失形成方式截然不同：它們不會在一個週末崩解，
+                而是以季度財報中不斷惡化的信用品質評分、
+                一筆接一筆的債務展期談判、以及緩慢攀升的不動產空置率呈現。
+            </p>
+            <p>
+                這種「慢速損失」在政治上難以問責，在市場上難以做空，
+                在新聞上也難以成為頭條。
+                但它對金融系統穩定性的侵蝕，可能比任何一次單點崩潰更為深遠。
+                觀察這些沉默的脆弱點，是理解下一個信用週期的必要功課。
+            </p>
+
+            <div class="highlight-box">
+                <strong>核心主張</strong>
+                降息週期的真正風險不在當下的受益者，而在於那些在升息期間以「等待換取沉默」
+                為策略、卻尚未完成資產負債表修復的機構。它們的壓力，將在 2026 至 2027 年集中顯現。
+            </div>
+        </div>
+        <a class="back-top" href="#top">↑ 回到文章列表</a>
+    </article>
+
+    <!-- ═══════════════════════════════════════════
+         Article 2 — 台灣少子化政策的結構性困境
+         ════════════════════════════════════════════ -->
+    <article class="article-section" id="art-2">
+        <div class="article-header">
+            <span class="tag tag-policy">公共政策</span>
+            <h1 class="article-title">台灣少子化政策的結構性困境：補貼治標，誘因治本</h1>
+            <div class="article-meta-row">
+                <span>📅 2025 年 10 月</span>
+                <span>⏱ 約 11 分鐘閱讀</span>
+                <span>✍️ Thomas</span>
+            </div>
+        </div>
+        <div class="article-body">
+            <p>
+                台灣的總生育率（TFR）在 2023 年跌至 0.87，成為全球最低之列。
+                政府的回應是一波接一波的生育補貼：生育獎勵金、育嬰留停補助、
+                托育補助上調。這些政策的政治邏輯清晰——即時可見、可以宣傳、
+                有具體金額。但它們的效果在學術文獻中幾乎是一致的：
+                邊際效用微小，且隨時間遞減。
+            </p>
+            <p>
+                問題不在於政府不願花錢，而在於花錢的地方錯了。
+                補貼攻擊的是症狀，不是病因。
+            </p>
+
+            <h3>生育決策的真實成本結構</h3>
+            <p>
+                經濟學的標準分析框架將生育決策視為一種長期投資的機會成本比較。
+                對台灣的育齡女性而言，這個機會成本由以下幾個因素共同決定：
+            </p>
+            <ul>
+                <li>
+                    <strong>勞動市場的懲罰性設計：</strong>台灣的就業保護立法在名義上提供育嬰假，
+                    但實際執行率——尤其是私部門男性員工——極低。
+                    職場文化中存在對「離職超過一年」者的系統性折扣，
+                    這使得生育的真實薪資損失遠超政府補貼所能彌補的範圍。
+                </li>
+                <li>
+                    <strong>托育的可近性而非可負擔性：</strong>許多討論聚焦於托育費用，
+                    但家長面對的核心問題往往是「根本找不到托育名額」。
+                    公共托育量能不足，私立托育品質良莠不齊，
+                    這不是補貼能解決的問題，而是供給端的制度設計問題。
+                </li>
+                <li>
+                    <strong>住宅市場對「生育決策」的影響：</strong>
+                    生育的另一個隱性成本是居住空間需求的突然擴大。
+                    在台北市，從一房換兩房的成本差距可輕易超過一千萬元。
+                    生育補貼的規模與此完全不在同一量級。
+                </li>
+            </ul>
+
+            <blockquote>
+                「一個年收入八十萬的雙薪家庭，計算的不是生育獎勵金的金額，
+                而是放棄第二份收入兩年後，能否在台北繼續供得起房貸。
+                補貼回答不了這個問題。」
+            </blockquote>
+
+            <h3>韓國的教訓</h3>
+            <p>
+                韓國在過去二十年花費了超過兩百八十兆韓元（約六千億台幣）在各類生育補貼上，
+                生育率從 1.2 跌至不到 0.8。這是人類歷史上最昂貴的政策失敗之一，
+                也是最清晰的「補貼無效」案例研究。
+            </p>
+            <p>
+                韓國的生育率崩潰有其獨特的結構性原因：
+                極端的教育軍備競賽（補習班支出佔家庭收入比例之高，居全球之冠）、
+                高度集中於首爾的經濟機會、以及勞動市場的嚴格等級制度。
+                這些問題的解法是制度改革，而非現金發放。
+            </p>
+
+            <h3>真正有效的政策條件</h3>
+            <p>
+                北歐國家的高生育率（相對東亞而言）並非來自更高的現金補貼，
+                而是來自一個完整的制度配套：帶薪育嬰假的實際使用率接近百分之百、
+                國家補貼的托育品質均一且量能充足、以及對非典型就業者的社會保障不因雇用形式而縮水。
+            </p>
+            <p>
+                這三個條件在台灣都尚未具備，且每一個的解決都需要觸動既有的政治利益結構。
+                這也許才是少子化政策停留在「發補貼」層次的真正原因——
+                不是政府不知道真正的解法，而是真正的解法政治成本太高。
+            </p>
+
+            <div class="highlight-box">
+                <strong>核心主張</strong>
+                台灣少子化的根源在於勞動市場設計、托育供給不足與住宅成本，
+                三者交織形成的高機會成本結構。
+                在這個結構被改變之前，任何現金補貼的效果都將在統計誤差範圍之內。
+            </div>
+        </div>
+        <a class="back-top" href="#top">↑ 回到文章列表</a>
+    </article>
+
+    <!-- ═══════════════════════════════════════════
+         Article 3 — AI 生產力紅利的分配
+         ════════════════════════════════════════════ -->
+    <article class="article-section" id="art-3">
+        <div class="article-header">
+            <span class="tag tag-tech">科技發展</span>
+            <h1 class="article-title">AI 生產力紅利的分配：誰真的受益了？</h1>
+            <div class="article-meta-row">
+                <span>📅 2025 年 9 月</span>
+                <span>⏱ 約 9 分鐘閱讀</span>
+                <span>✍️ Thomas</span>
+            </div>
+        </div>
+        <div class="article-body">
+            <p>
+                過去兩年，AI 相關投資規模以每年數千億美元的速度擴張，
+                企業財報中「AI 驅動效率提升」的說法無所不在。
+                但如果你去查宏觀生產力統計數據，會發現一個令人困惑的落差：
+                美國非農業部門的勞動生產力成長，在 2023 至 2024 年仍落在歷史平均水準附近，
+                並未出現與 AI 投資規模相稱的加速。
+            </p>
+            <p>
+                這個落差有幾種解釋方式，但最值得深究的，
+                不是「AI 還需要時間擴散」這個技術性解釋，
+                而是「AI 紅利已經在集中，只是沒有反映在你量的那個統計數字裡」。
+            </p>
+
+            <h3>生產力統計的盲點</h3>
+            <p>
+                國民帳戶中的生產力計算，依賴於對產出的可測量性。
+                金融服務、法律諮詢、軟體開發這類領域的產出，
+                一直以來都是透過投入的代理變數（例如工時、薪資）間接估算的，
+                而非直接計量實際產出。
+            </p>
+            <p>
+                這意味著：如果 AI 讓一個律師在同樣時間內處理了兩倍的案件量，
+                但律師事務所的收費結構沒有改變（或者反而因為市場競爭而壓縮），
+                這個生產力提升根本不會出現在任何官方統計裡。
+                它只會出現在律師事務所的利潤率上。
+            </p>
+
+            <blockquote>
+                「生產力統計量的是可見的輸入與可測量的輸出。
+                AI 的收益很多藏在兩者之間的空白地帶——它被記為成本下降，而非產出上升。」
+            </blockquote>
+
+            <h3>集中化的結構性原因</h3>
+            <p>
+                AI 的邊際成本結構與傳統工具截然不同。
+                一個大型企業能夠負擔定制化模型微調、私有資料訓練與專屬推論基礎設施；
+                一個小型企業依賴通用 API，邊際成本幾乎相同，但缺乏規模優勢。
+            </p>
+            <p>
+                這在競爭結構上製造了一個加速器效應：原本已具備規模優勢的企業，
+                透過 AI 進一步壓縮邊際成本，將這個優勢放大。
+                在足夠長的時間軸上，這會表現為行業集中度上升、
+                中型企業的市佔率被侵蝕，以及勞動者薪資談判力的進一步弱化。
+            </p>
+
+            <h3>誰是真正的受益者？</h3>
+            <p>
+                目前為止，AI 生產力紅利的最清晰受益者有三類：
+            </p>
+            <ul>
+                <li>
+                    <strong>資料密集型平台：</strong>他們不只是 AI 的使用者，
+                    更是 AI 的訓練資料提供者。每一次使用者互動都在強化他們的模型護城河。
+                </li>
+                <li>
+                    <strong>高端知識工作者：</strong>能夠有效使用 AI 工具來放大自身產出的個體，
+                    而非被 AI 替代的中低技能重複性工作者。
+                </li>
+                <li>
+                    <strong>算力基礎設施擁有者：</strong>GPU 製造商、
+                    雲端運算提供商與資料中心運營者，正在收取所有 AI 應用的「通行費」。
+                </li>
+            </ul>
+            <p>
+                這三類受益者的共同特徵是：他們已經是市場上的強勢方。
+                AI 的到來讓他們更強，而非讓原本弱勢的一方追上。
+                這不是技術命定論，而是制度缺席的結果。
+            </p>
+
+            <div class="highlight-box">
+                <strong>核心主張</strong>
+                AI 生產力紅利的宏觀不顯著，並不意味著紅利不存在，
+                而是它已在資本報酬與市場集中度的形式下被提前兌現。
+                這個再分配過程需要競爭政策與勞動制度的積極回應，而非「等待擴散」的樂觀期待。
+            </div>
+        </div>
+        <a class="back-top" href="#top">↑ 回到文章列表</a>
+    </article>
+
+    <!-- ═══════════════════════════════════════════
+         Article 4 — 能源轉型的財政算術
+         ════════════════════════════════════════════ -->
+    <article class="article-section" id="art-4">
+        <div class="article-header">
+            <span class="tag tag-policy">公共政策</span>
+            <h1 class="article-title">能源轉型的財政算術：碳定價的政治經濟學</h1>
+            <div class="article-meta-row">
+                <span>📅 2025 年 7 月</span>
+                <span>⏱ 約 13 分鐘閱讀</span>
+                <span>✍️ Thomas</span>
+            </div>
+        </div>
+        <div class="article-body">
+            <p>
+                氣候政策的討論常常在「要不要做」上耗費過多時間，
+                而在「怎麼做才有效」上著墨不足。
+                本文聚焦後者：碳定價的兩種主要工具——碳稅與碳排放交易系統（ETS）——
+                在理論效率上的差異其實很小，但在政治可行性上的差異極大。
+                理解這個差距，才能評估各國氣候承諾的真實分量。
+            </p>
+
+            <h3>碳稅的優點與致命弱點</h3>
+            <p>
+                碳稅在理論上是最簡潔的碳定價工具：
+                對每噸 CO₂ 徵收固定費用，讓市場決定如何最有效地減排。
+                它的優點顯而易見：價格可預期（有利於企業的長期投資決策）、
+                行政成本低（可以依附現有稅收系統）、
+                且能產生政府收入（可用於轉移支付或減輕其他稅負）。
+            </p>
+            <p>
+                但碳稅的政治弱點同樣清晰：它在名義上是一種「新稅」。
+                在反稅情緒普遍的民主政治環境中，
+                任何標上「稅」字的政策都要面對極高的立法阻力，
+                即便它在財政上是中性的（將碳稅收入全額退還給民眾）。
+                法國 2018 年的「黃背心運動」，部分根源正是對燃油稅調漲的抵制。
+            </p>
+
+            <h3>ETS 的設計複雜性</h3>
+            <p>
+                排放交易系統（ETS）的政治包裝更友善——它不叫「稅」，叫「市場機制」。
+                但這個友善的包裝背後，藏著複雜的設計挑戰：
+            </p>
+            <ul>
+                <li>
+                    <strong>總量上限的政治設定：</strong>
+                    ETS 的減碳效果直接取決於「總量上限」設得多緊。
+                    在政治壓力下，各國往往將初始上限設得過寬、
+                    並為高排放產業提供大量免費配額，
+                    導致碳價長期偏低、無法提供足夠的投資誘因。
+                    歐盟 ETS 在早期十年的碳價幾乎長期在每噸十歐元以下徘徊，
+                    低到無法影響任何主要投資決策。
+                </li>
+                <li>
+                    <strong>碳洩漏問題：</strong>
+                    若特定地區碳價較高，高排放產業可能將生產轉移至無碳定價的地區，
+                    整體排放不減反增。歐盟為此引入碳邊境調整機制（CBAM），
+                    但這又引入了新的貿易摩擦與行政複雜性。
+                </li>
+            </ul>
+
+            <blockquote>
+                「碳定價政策的問題從來不是『哪種工具更有效率』，
+                而是『哪種工具能在政治可行性的約束下，
+                依然設計出足夠高的有效碳價』。
+                這是一個政治工程問題，不是經濟學問題。」
+            </blockquote>
+
+            <h3>台灣的碳定價起步</h3>
+            <p>
+                台灣在 2023 年通過《氣候變遷因應法》，確立了碳費機制。
+                初始費率每噸 300 元台幣（約 10 美元），遠低於 IPCC 建議的
+                2030 年有效減碳碳價下限 100 美元。
+            </p>
+            <p>
+                這個起步費率的設定，既反映了政治現實（高能耗產業的遊說力量），
+                也反映了一個制度設計的策略選擇——先建立機制，再逐步調升，
+                避免一開始就引發強烈抵制而導致整個機制被推翻。
+                這種策略是否有效，取決於後續費率調升的政治承諾能否兌現。
+                而目前的調升路徑，在行政規劃層面仍缺乏約束性的法定時間表。
+            </p>
+
+            <div class="highlight-box">
+                <strong>核心主張</strong>
+                評估一國氣候政策的真實雄心，不應看名義上採用了哪種碳定價工具，
+                而應看「有效碳價」是否足夠高、上限設定是否具有約束力、
+                以及費率調升路徑是否有制度性保障。
+                以此標準衡量，多數國家（包括台灣）的氣候政策仍處於「象徵性行動」階段。
+            </div>
+        </div>
+        <a class="back-top" href="#top">↑ 回到文章列表</a>
+    </article>
+
+    <!-- ═══════════════════════════════════════════
+         Article 5 — 台灣資本市場的深度問題
+         ════════════════════════════════════════════ -->
+    <article class="article-section" id="art-5">
+        <div class="article-header">
+            <span class="tag tag-finance">金融制度</span>
+            <h1 class="article-title">台灣資本市場的深度問題：不是估值，是結構</h1>
+            <div class="article-meta-row">
+                <span>📅 2025 年 5 月</span>
+                <span>⏱ 約 10 分鐘閱讀</span>
+                <span>✍️ Thomas</span>
+            </div>
+        </div>
+        <div class="article-body">
+            <p>
+                「台股本益比偏低，存在折價空間」——這個命題每隔一段時間就會在財經媒體上重新出現，
+                通常伴隨著一張台股與美股、南韓、日本的本益比比較圖。
+                這張圖的用意是暗示：台股「應該」更貴，折價終將收斂。
+            </p>
+            <p>
+                但折價不是誤定價等待被套利，它是一個持續存在的結構性特徵的反映。
+                一個市場長期維持折價，意味著折價本身是均衡狀態，
+                而不是「市場還沒反應過來」的暫時失效。要問的問題是：是什麼結構維持了這個均衡？
+            </p>
+
+            <h3>流動性提供者的結構問題</h3>
+            <p>
+                台股的散戶交易比例長期佔總成交量六成以上，
+                在亞洲主要市場中屬於最高的行列。
+                這並非意味著台灣的「投資文化」特別偏好短線，
+                而是機構投資人的力量相對薄弱的結果。
+            </p>
+            <p>
+                機構投資人——尤其是國內的法人機構——在台股扮演的角色長期偏向「穩定市場」而非「價值發現」。
+                公股銀行與壽險業者持有大量台股，但其買賣決策受到高度政策干預，
+                不具備真正的市場定價功能。
+                缺乏足夠多的「以基本面為導向的長期投資人」，
+                本益比的擴張就缺乏結構性支撐。
+            </p>
+
+            <h3>外資限制與資訊不對稱</h3>
+            <p>
+                台股過去對外資持股上限的限制，雖然在多數行業已大幅放寬，
+                但在電信、媒體與部分服務業仍存在實質障礙。
+                更重要的是，資訊揭露品質的差異——
+                中小型台股的英文資訊相當匱乏，國際機構投資人的研究覆蓋率極低——
+                使得外資的參與高度集中於電子大型股，
+                而電子大型股的估值又受到台積電的強烈干擾效應。
+            </p>
+
+            <blockquote>
+                「台積電在台股的權重，讓任何『台股平均本益比』的討論都成為一個統計陷阱。
+                移除台積電之後的台股估值圖，和加上台積電的版本，
+                是完全不同的兩張圖，映照的是完全不同的兩個市場。」
+            </blockquote>
+
+            <h3>法人治理文化的歷史路徑</h3>
+            <p>
+                台灣的上市企業中，家族控制型公司的比例相對高。
+                在這類治理結構下，大股東與小股東之間的利益衝突，
+                往往透過關係人交易、交叉持股與低股利政策來維持控制權，
+                而非透過提升市場估值來獲利。
+                這是一個路徑依賴問題：現行規則對這類行為的約束力不足，
+                而改變規則的立法動力又來自現行規則下的受益者。
+            </p>
+            <p>
+                真正改善台股估值的途徑，不是等待「市場終於發現台股便宜」，
+                而是改變這些結構性因素：提升中小企業的資訊揭露品質、
+                加強獨立董事的實質監督能力、以及建立對大股東侵占行為的有效追責機制。
+                這些改革速度緩慢，但它們才是折價的真正解法。
+            </p>
+
+            <div class="highlight-box">
+                <strong>核心主張</strong>
+                台股的長期折價不是估值錯誤，而是流動性結構、外資資訊障礙與法人治理文化
+                三者共同決定的均衡狀態。折價的收斂需要制度改革，而非市場時機的等待。
+            </div>
+        </div>
+        <a class="back-top" href="#top">↑ 回到文章列表</a>
+    </article>
+
+    <!-- ═══════════════════════════════════════════
+         Article 6 — 平台管制的邊界
+         ════════════════════════════════════════════ -->
+    <article class="article-section" id="art-6">
+        <div class="article-header">
+            <span class="tag tag-tech">科技發展</span>
+            <h1 class="article-title">平台管制的邊界：數位市場中的競爭法困境</h1>
+            <div class="article-meta-row">
+                <span>📅 2025 年 3 月</span>
+                <span>⏱ 約 12 分鐘閱讀</span>
+                <span>✍️ Thomas</span>
+            </div>
+        </div>
+        <div class="article-body">
+            <p>
+                2024 年，美國司法部在對 Google 的反壟斷訴訟中取得關鍵勝訴，
+                認定 Google 在搜尋廣告市場維持違法壟斷。
+                歐盟則依據《數位市場法》（DMA）對多家「守門人」平台展開調查。
+                這些都是重要的司法里程碑，但它們也暴露了一個根本性的困境：
+                我們正在用二十世紀的競爭法框架，試圖規範二十一世紀的平台經濟。
+            </p>
+
+            <h3>傳統反壟斷的核心假設</h3>
+            <p>
+                芝加哥學派的反壟斷思想，在過去四十年主導了美國的競爭政策。
+                其核心判斷標準是消費者福利：只要市場行為沒有導致消費者付出更高的價格，
+                就不構成反競爭行為。
+            </p>
+            <p>
+                這個框架在工業時代的商品市場中運作良好。
+                但平台經濟的根本邏輯是「零價格換取資料」——
+                Google 的搜尋、Meta 的社群媒體、大多數「免費」應用，
+                消費者支付的是資料，而非金錢。
+                傳統的「消費者價格傷害」分析對這類市場幾乎完全失效。
+            </p>
+
+            <h3>平台競爭損害的三種形式</h3>
+            <p>
+                數位平台的競爭損害，表現在三個傳統框架難以捕捉的維度上：
+            </p>
+            <ul>
+                <li>
+                    <strong>資料獨占（Data Monopoly）：</strong>
+                    平台透過大規模用戶行為資料的獨家累積，
+                    建立起競爭對手無法複製的優勢。
+                    這類優勢的傷害不在於它提高了今天的消費者價格，
+                    而在於它封閉了未來可能挑戰者的入場條件。
+                </li>
+                <li>
+                    <strong>生態系封閉（Ecosystem Lock-in）：</strong>
+                    當一個平台的應用生態、支付系統、雲端服務與終端裝置形成高度整合的封閉環境，
+                    用戶的轉換成本趨近於無限大，即便有更好的替代品，競爭也無從發生。
+                </li>
+                <li>
+                    <strong>創新窒息（Innovation Suppression）：</strong>
+                    大型平台以「殺手式收購」消滅潛在競爭者——
+                    在競爭對手尚未壯大之前就以高溢價收購，阻止市場結構的演化。
+                    傳統反壟斷審查在事前難以辨識此類收購的危害性。
+                </li>
+            </ul>
+
+            <blockquote>
+                「平台競爭的問題不在今天的價格，而在明天的可能性。
+                一個能夠預先封閉競爭可能性的市場結構，
+                比任何價格壟斷都更難被傳統競爭法所捕捉。」
+            </blockquote>
+
+            <h3>歐盟 DMA 的制度實驗</h3>
+            <p>
+                歐盟的《數位市場法》採取了不同的監管邏輯：
+                不等損害發生後再追訴，而是事前規定「守門人」平台的行為義務——
+                例如強制互通性、禁止自我優待、要求資料可攜性。
+            </p>
+            <p>
+                這是競爭監管思想的重要轉變：從事後補救到事前規制。
+                但它也帶來了新的問題：什麼樣的規模才算「守門人」？
+                強制互通性是否會破壞平台的安全架構？
+                事前規制所需的技術理解，監管機構是否具備？
+            </p>
+            <p>
+                DMA 的實驗價值在於，它提供了一個制度框架的試驗場。
+                即便它的具體規定在若干年後需要修訂，
+                它所建立的「事前規制數位守門人」的監管思路，
+                很可能成為全球後續立法的參照點。
+                台灣目前尚無等效機制，這個空白在數位市場持續擴張的情況下將愈加顯著。
+            </p>
+
+            <div class="highlight-box">
+                <strong>核心主張</strong>
+                以消費者價格傷害為核心的傳統競爭法，對平台經濟的核心損害形式——
+                資料獨占、生態封閉、創新窒息——幾乎沒有有效的應對能力。
+                監管框架的更新不是「要不要管」的問題，而是舊工具已無法勝任的現實。
+            </div>
+        </div>
+        <a class="back-top" href="#top">↑ 回到文章列表</a>
+    </article>
+
+    <!-- Drawer 遮罩 -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <!-- Drawer 面板 -->
+    <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="文章閱讀視窗">
+        <div class="drawer-progress" id="drawerProgress"></div>
+        <div class="drawer-topbar">
+            <div class="drawer-topbar-left">
+                <span class="drawer-category-badge" id="drawerCategoryBadge"></span>
+                <span class="drawer-reading-label">閱讀中</span>
+            </div>
+            <button class="drawer-close" id="drawerClose" aria-label="關閉">✕</button>
+        </div>
+        <div class="drawer-body" id="drawerBody"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="index.html">首頁</a>
+                <a href="articles.html">觀點文章</a>
+                <a href="index.html#topics">關注議題</a>
+                <a href="index.html#about">關於我</a>
+                <a href="https://github.com" target="_blank">GitHub</a>
+            </div>
+            <div class="footer-copyright">
+                <p>Thomas · 獨立觀點，理性討論</p>
+                <p style="opacity:0.5; margin-top:6px;">
+                    本站所有文章均為個人觀點，不代表任何機構立場。
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ── DOM refs ──
+        const overlay         = document.getElementById('drawerOverlay');
+        const drawer          = document.getElementById('drawer');
+        const drawerBody      = document.getElementById('drawerBody');
+        const drawerProgress  = document.getElementById('drawerProgress');
+        const drawerCatBadge  = document.getElementById('drawerCategoryBadge');
+
+        // ── 分類對應 ──
+        const categoryMap = {
+            finance: { label: '💹 金融制度', cls: 'badge-finance' },
+            policy:  { label: '📜 公共政策', cls: 'badge-policy'  },
+            tech:    { label: '🖥️ 科技發展',  cls: 'badge-tech'    },
+        };
+
+        // ── 開啟 Drawer ──
+        function openDrawer(articleId, category) {
+            const src = document.getElementById(articleId);
+            if (!src) return;
+
+            // 注入內容
+            const headerEl = src.querySelector('.article-header');
+            const bodyEl   = src.querySelector('.article-body');
+            drawerBody.innerHTML = '';
+            drawerBody.classList.remove('animating');
+
+            if (headerEl) drawerBody.appendChild(headerEl.cloneNode(true));
+            if (bodyEl)   drawerBody.appendChild(bodyEl.cloneNode(true));
+
+            // 分類標籤
+            const cat = categoryMap[category] || {};
+            drawerCatBadge.textContent  = cat.label || '';
+            drawerCatBadge.className    = 'drawer-category-badge ' + (cat.cls || '');
+
+            drawerBody.scrollTop = 0;
+            drawerProgress.style.width = '0%';
+
+            // 顯示面板
+            overlay.classList.add('open');
+            drawer.classList.add('open');
+            document.body.style.overflow = 'hidden';
+
+            // 觸發淡入動畫
+            requestAnimationFrame(() => {
+                drawerBody.classList.add('animating');
+                setTimeout(() => drawerBody.classList.remove('animating'), 500);
+            });
+        }
+
+        // ── 關閉 Drawer ──
+        function closeDrawer() {
+            overlay.classList.remove('open');
+            drawer.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+        overlay.addEventListener('click', closeDrawer);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+        // ── 閱讀進度條 ──
+        drawerBody.addEventListener('scroll', () => {
+            const { scrollTop, scrollHeight, clientHeight } = drawerBody;
+            const max = scrollHeight - clientHeight;
+            const pct = max > 0 ? (scrollTop / max) * 100 : 0;
+            drawerProgress.style.width = pct.toFixed(1) + '%';
+        });
+
+        // ── 卡片點擊 → 開啟 Drawer ──
+        document.querySelectorAll('.index-card').forEach(card => {
+            card.addEventListener('click', e => {
+                e.preventDefault();
+                const id  = (card.getAttribute('href') || '').replace('#', '');
+                const cat = card.dataset.category || '';
+                if (id) openDrawer(id, cat);
+            });
+        });
+
+        // ── 分類篩選 ──
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.index-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.dataset.filter;
+                filterBtns.forEach(b =>
+                    b.classList.remove('active', 'active-policy', 'active-finance', 'active-tech')
+                );
+                btn.classList.add(filter === 'all' ? 'active' : 'active-' + filter);
+
+                cards.forEach((card, i) => {
+                    const match = filter === 'all' || card.dataset.category === filter;
+                    card.style.display = match ? 'flex' : 'none';
+                    if (match) {
+                        card.style.animation = 'none';
+                        card.offsetHeight; // reflow
+                        card.style.animation = `fadeInUp 0.35s ease ${i * 0.04}s both`;
+                    }
+                });
+            });
+        });
+
+        // ── 捲動進場動畫 ──
+        const io = new IntersectionObserver(entries => {
+            entries.forEach((e, i) => {
+                if (e.isIntersecting) {
+                    e.target.style.animation = `fadeInUp 0.5s ease ${i * 0.05}s both`;
+                    io.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.06 });
+
+        document.querySelectorAll('.index-card').forEach(el => io.observe(el));
+    </script>
+
+</body>
+</html>

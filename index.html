@@ -1,396 +1,895 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8" />
-    <title>台股分析系統</title>
+    <title>Thomas | 觀點與思考</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/static/css/app.css">
+    <meta name="description"
+        content="Thomas 的個人觀點網站 - 公共政策、金融制度與科技發展的獨立分析" />
+
     <style>
+        /* 全局樣式 */
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #0f172a;
+            --panel: #111827;
+            --panel-hover: #1a2332;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #38bdf8;
+            --accent-soft: rgba(59, 130, 246, 0.1);
+            --border: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --code-bg: #020617;
+            --gradient-start: rgba(59, 130, 246, 0.15);
+            --gradient-end: rgba(56, 189, 248, 0.05);
+            --tag-policy: rgba(16, 185, 129, 0.15);
+            --tag-finance: rgba(59, 130, 246, 0.15);
+            --tag-tech: rgba(245, 158, 11, 0.15);
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+                "Microsoft JhengHei", "微軟正黑體";
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
         }
 
-        .app-container {
-            max-width: 1400px;
+        /* 背景動態效果 */
+        .background-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 10%, var(--gradient-start), transparent 50%),
+                radial-gradient(ellipse at 80% 90%, var(--gradient-end), transparent 50%),
+                var(--bg-primary);
+            z-index: -1;
+        }
+
+        .background-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        /* 導航列 */
+        nav {
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(12px);
+            background: rgba(10, 14, 26, 0.8);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            padding: 16px 0;
+        }
+
+        nav .container {
+            max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .app-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
+            padding: 0 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .app-header h1 {
-            font-size: 28px;
-            font-weight: 600;
+        nav .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
         }
 
-        .status-indicator {
+        nav .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--accent-primary);
+        }
+
+        /* 主標題區 */
+        header {
+            padding: 120px 24px 80px;
+            text-align: center;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        header .eyebrow {
+            font-size: 0.875rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-primary);
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        header h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        header .subtitle {
+            font-size: clamp(1.05rem, 2vw, 1.2rem);
+            color: var(--text-secondary);
+            max-width: 680px;
+            margin: 0 auto 40px;
+            line-height: 2;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        /* 徽章區 */
+        .badges {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 48px;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .badge {
             padding: 8px 16px;
             border-radius: 20px;
-            font-size: 14px;
-            background: rgba(255,255,255,0.2);
-        }
-
-        .status-indicator.online {
-            background: rgba(76, 175, 80, 0.3);
-            color: #a5d6a7;
-        }
-
-        .status-indicator.offline {
-            background: rgba(244, 67, 54, 0.3);
-            color: #ef9a9a;
-        }
-
-        .main-content {
-            display: flex;
-            min-height: 600px;
-        }
-
-        .sidebar {
-            width: 220px;
-            background: #f5f5f5;
-            padding: 20px;
-            border-right: 1px solid #e0e0e0;
-        }
-
-        .nav-btn {
-            display: block;
-            width: 100%;
-            padding: 12px 16px;
-            margin-bottom: 8px;
-            border: none;
-            background: white;
-            color: #333;
-            text-align: left;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 15px;
-        }
-
-        .nav-btn:hover {
-            background: #e3f2fd;
-            transform: translateX(4px);
-        }
-
-        .nav-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: var(--accent-soft);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: var(--accent-primary);
+            font-size: 0.875rem;
             font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: default;
         }
 
-        .content-area {
-            flex: 1;
-            padding: 30px;
+        .badge:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
         }
 
-        .view-section {
-            display: none;
-        }
-
-        .input-group {
+        /* CTA 按鈕 */
+        .cta {
             display: flex;
-            gap: 10px;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .button {
+            padding: 12px 28px;
+            border-radius: 12px;
+            border: 2px solid var(--accent-primary);
+            background: transparent;
+            color: var(--accent-primary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .button.primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .button.primary:hover {
+            background: var(--accent-secondary);
+            border-color: var(--accent-secondary);
+        }
+
+        /* 內容區塊 */
+        section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        section h2 {
+            font-size: clamp(1.8rem, 3vw, 2.2rem);
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+            position: relative;
+            display: inline-block;
+        }
+
+        section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), transparent);
+        }
+
+        section > .section-desc {
+            color: var(--text-secondary);
+            max-width: 700px;
+            font-size: 1.05rem;
+            margin-top: 28px;
+            line-height: 1.9;
+        }
+
+        /* 主題分類卡片 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            background: var(--panel-hover);
+            border-color: var(--accent-primary);
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .card h3 {
+            margin: 0 0 12px;
+            font-size: 1.15rem;
+            color: var(--text-primary);
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* 文章標籤 */
+        .tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        .tag-policy  { background: var(--tag-policy);  color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
+        .tag-finance { background: var(--tag-finance); color: var(--accent-primary); border: 1px solid rgba(59,130,246,0.3); }
+        .tag-tech    { background: var(--tag-tech);    color: var(--warning); border: 1px solid rgba(245,158,11,0.3); }
+
+        /* 觀點文章卡片 */
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .article-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .article-card:hover {
+            background: var(--panel-hover);
+            border-color: var(--accent-primary);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+        }
+
+        .article-card .article-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .article-card .article-excerpt {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+            flex: 1;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* 關於我區塊 */
+        .about-section {
+            background: linear-gradient(180deg, transparent, var(--panel) 30%, var(--panel) 70%, transparent);
+            padding: 80px 0;
+            margin: 40px 0;
+        }
+
+        .about-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 64px;
+            align-items: start;
+        }
+
+        .about-left {
+            position: sticky;
+            top: 100px;
+        }
+
+        .avatar-placeholder {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
             margin-bottom: 20px;
+            border: 3px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .about-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .about-role {
+            font-size: 0.92rem;
+            color: var(--accent-primary);
+            margin-bottom: 16px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
-        .input-group input {
-            flex: 1;
-            min-width: 200px;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
+        .social-link {
+            padding: 6px 14px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
             border-radius: 8px;
-            font-size: 15px;
-            transition: border-color 0.3s;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
         }
 
-        .input-group input:focus {
-            outline: none;
-            border-color: #667eea;
+        .social-link:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
         }
 
-        .btn-primary {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+        .about-right h2 {
+            font-size: 1.8rem;
+            margin-bottom: 24px;
+        }
+
+        .about-right h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), transparent);
+        }
+
+        .about-right p {
+            color: var(--text-secondary);
+            font-size: 1.02rem;
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+
+        .belief-list {
+            list-style: none;
+            margin-top: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .belief-list li {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            font-size: 0.97rem;
+            color: var(--text-secondary);
+            padding: 14px 18px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .belief-list li span.icon {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* 分隔線 */
+        .divider {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 500;
-            transition: transform 0.2s, box-shadow 0.2s;
+            border-top: 1px solid var(--border);
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        #stockInfo, #statsContainer, #dataTable,
-        #analysisResults, #dailyResults, #compareResults {
-            margin-top: 20px;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-
-        pre {
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 20px;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        .error {
-            color: #d32f2f;
-            padding: 15px;
-            background: #ffebee;
-            border-radius: 8px;
-            border-left: 4px solid #d32f2f;
-        }
-
-        .app-footer {
-            background: #f5f5f5;
-            padding: 20px;
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 60px 24px 40px;
             text-align: center;
-            color: #666;
-            border-top: 1px solid #e0e0e0;
         }
 
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        .footer-copyright {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            line-height: 2;
+        }
+
+        /* 動畫 */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 響應式設計 */
         @media (max-width: 768px) {
-            .main-content {
+            nav .nav-links { gap: 16px; }
+            header { padding: 80px 24px 60px; }
+            section { padding: 60px 24px; }
+
+            .about-inner {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .about-left {
+                position: static;
+                display: flex;
                 flex-direction: column;
+                align-items: center;
+                text-align: center;
             }
-
-            .sidebar {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid #e0e0e0;
-            }
-
-            .nav-btn {
-                display: inline-block;
-                width: auto;
-                margin-right: 8px;
-            }
+            .about-left .social-links { justify-content: center; }
         }
+
+        /* 滾動條樣式 */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
     </style>
 </head>
-<body>
 
-<div class="app-container">
-    <header class="app-header">
-        <h1>📈 台股分析系統</h1>
-        <span id="apiStatus" class="status-indicator"></span>
+<body>
+    <div class="background-gradient"></div>
+    <div class="background-grid"></div>
+
+    <!-- 導航列 -->
+    <nav>
+        <div class="container">
+            <a href="#home" class="logo">
+                <span>✍️</span>
+                <span>Thomas</span>
+            </a>
+            <div class="nav-links">
+                <a href="#about">關於我</a>
+                <a href="articles.html">觀點文章</a>
+                <a href="#topics">關注議題</a>
+                <a href="https://github.com" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主標題區 -->
+    <header id="home">
+        <div class="eyebrow">獨立觀點 · 理性分析 · 促進討論</div>
+        <h1>思考那些被忽略的條件</h1>
+        <p class="subtitle">
+            我關注公共政策、金融制度與科技發展如何影響社會的長期運作。<br />
+            習慣從原始數據、制度設計與歷史脈絡出發，<br />
+            找出新聞背後被省略的假設與限制條件。
+        </p>
+
+        <div class="badges">
+            <span class="badge">📜 公共政策</span>
+            <span class="badge">💹 金融制度</span>
+            <span class="badge">🖥️ 科技發展</span>
+            <span class="badge">🔍 數據驅動</span>
+            <span class="badge">🌐 台灣視角</span>
+        </div>
+
+        <div class="cta">
+            <a class="button primary" href="articles.html">
+                <span>閱讀觀點文章</span>
+                <span>→</span>
+            </a>
+            <a class="button" href="#about">
+                <span>關於我</span>
+            </a>
+        </div>
     </header>
 
-    <main class="main-content">
-        <aside class="sidebar">
-            <button data-view="stock" class="nav-btn active">股票查詢</button>
-            <button data-view="analysis" class="nav-btn">區間分析</button>
-            <button data-view="daily" class="nav-btn">每日行情</button>
-            <button data-view="compare" class="nav-btn">股票比較</button>
-            <button data-view="extra1" class="nav-btn">新增紀錄分析</button>
-            <button data-view="extra2" class="nav-btn">瀏覽紀錄分析</button>
-        </aside>
+    <hr class="divider" />
 
-        <section class="content-area">
+    <!-- 關注的議題 -->
+    <section id="topics">
+        <h2>關注的議題</h2>
+        <p class="section-desc">
+            這三個領域彼此交織、互相制約。單獨看任何一個，都容易落入片面的結論。
+        </p>
 
-            <!-- 股票查詢視圖 -->
-            <section id="stockView" class="view-section">
-                <div id="preMarketBrief"></div>
+        <div class="grid">
+            <div class="card">
+                <div class="card-icon">📜</div>
+                <h3>公共政策</h3>
+                <p>
+                    政策效果往往在五年後才顯現，但輿論的注意力只有五天。
+                    我關注政策的誘因結構、執行條件，以及被設計忽略的群體。
+                </p>
+            </div>
 
-                <div class="input-group">
-                    <input id="stockCode" type="text" placeholder="請輸入股票代碼 (例: 2330)" />
-                    <button id="btnLoadStock" class="btn-primary">查詢</button>
+            <div class="card">
+                <div class="card-icon">💹</div>
+                <h3>金融制度</h3>
+                <p>
+                    金融市場不是中立的資源配置機制，它的規則決定了誰能借錢、誰承擔風險。
+                    我從制度設計角度解讀市場現象。
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">🖥️</div>
+                <h3>科技發展</h3>
+                <p>
+                    技術本身是中性的，但技術的採用從來不是。
+                    我關注科技如何重塑權力關係、改變資訊不對稱，以及誰在主導這個過程。
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <h3>數據與方法論</h3>
+                <p>
+                    同一份數據可以支撐截然相反的結論。
+                    我對研究設計、樣本選擇與因果推論的邏輯保持持續的懷疑。
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">🏛️</div>
+                <h3>制度比較</h3>
+                <p>
+                    「其他國家怎麼做」是常見的論據，也是最常被誤用的。
+                    我關注制度移植的前提條件與路徑依賴。
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">⏳</div>
+                <h3>長期視角</h3>
+                <p>
+                    大多數重要的問題在短期內看起來無關緊要。
+                    我嘗試辨識哪些今日的「小事」將成為十年後的結構性問題。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- 觀點文章 -->
+    <section id="opinions">
+        <h2>近期觀點</h2>
+        <p class="section-desc">
+            每篇文章都試圖提出一個可被驗證或反駁的具體主張，而非泛泛而談。
+        </p>
+
+        <div class="article-grid">
+            <a class="article-card" href="articles.html#art-1" style="text-decoration:none; color:inherit;">
+                <span class="tag tag-finance">金融制度</span>
+                <div class="article-title">升息週期結束後，誰會是沉默的輸家？</div>
+                <div class="article-excerpt">
+                    利率下行的受益者清晰可見，但它重新定價的風險往往在兩年後才以信用事件的形式出現。
+                    本文追蹤資金流向與資產負債表結構，試圖找出脆弱點。
                 </div>
-
-                <div id="stockInfo"></div>
-                <div id="statsContainer"></div>
-                <div id="dataTable"></div>
-            </section>
-
-            <!-- 區間分析視圖 -->
-            <section id="analysisView" class="view-section" style="display:none">
-                <div class="input-group">
-                    <input id="analysisCode" type="text" placeholder="股票代碼 (例: 2330)" />
-                    <input id="startDate" type="date" />
-                    <input id="endDate" type="date" />
-                    <button id="btnRange" class="btn-primary">分析</button>
+                <div class="article-meta">
+                    <span>2025 · 12 月</span>
+                    <span>8 分鐘閱讀 →</span>
                 </div>
-                <div id="analysisResults"></div>
-            </section>
+            </a>
 
-            <!-- 每日行情視圖 -->
-            <section id="dailyView" class="view-section" style="display:none">
-                <div class="input-group">
-                    <input id="dailyDate" type="date" />
-                    <button id="btnDaily" class="btn-primary">查詢</button>
+            <a class="article-card" href="articles.html#art-2" style="text-decoration:none; color:inherit;">
+                <span class="tag tag-policy">公共政策</span>
+                <div class="article-title">台灣少子化政策的結構性困境：補貼治標，誘因治本</div>
+                <div class="article-excerpt">
+                    生育補貼的邊際效用遞減是可預測的。真正壓制生育率的是機會成本，
+                    而機會成本由勞動市場制度、托育可近性與住宅市場共同決定。
                 </div>
-                <div id="dailyResults"></div>
-            </section>
-
-            <!-- 股票比較視圖 -->
-            <section id="compareView" class="view-section" style="display:none">
-                <div class="input-group">
-                    <input id="compareCodes" type="text" placeholder="多檔股票代碼，逗號分隔 (例: 2330,2317,2454)" />
-                    <button id="btnCompare" class="btn-primary">比較</button>
+                <div class="article-meta">
+                    <span>2025 · 10 月</span>
+                    <span>11 分鐘閱讀 →</span>
                 </div>
-                <div id="compareResults"></div>
-            </section>
+            </a>
 
-            <!-- 空白分頁 1 -->
-            <section id="extra1View" class="view-section" style="display:none">
-                <h2>新增紀錄分析</h2>
-                <form id="notesAddForm">
-                    <div class="form-grid">
-                        <div class="field">
-                            <label>日期 <span style="color: red;">*</span></label>
-                            <input id="notesDate" type="date" required />
-                        </div>
-                        <div class="field">
-                            <label>股票代號 <span style="color: red;">*</span></label>
-                            <input id="notesCode" type="text" placeholder="例如 2330" required />
-                        </div>
-                        <div class="field">
-                            <label>股票名稱</label>
-                            <input id="notesName" type="text" placeholder="例如 台積電" />
-                        </div>
-                        <div class="field">
-                            <label>信心度</label>
-                            <input id="notesConfidence" type="number" min="1" max="10" step="1" value="5" />
-                        </div>
-                        <div class="field">
-                            <label>目標價</label>
-                            <input id="notesTarget" type="number" step="0.01" placeholder="例如 1050" />
-                        </div>
-                        <div class="field">
-                            <label>停損價</label>
-                            <input id="notesStop" type="number" step="0.01" placeholder="例如 980" />
-                        </div>
-                        <div class="field">
-                            <label>預判</label>
-                            <input id="notesPrediction" type="text" placeholder="例如 突破均線" />
-                        </div>
-                        <div class="field">
-                            <label>策略標籤</label>
-                            <input id="notesTags" type="text" placeholder="例如 波段,均線" />
-                        </div>
-                        <div class="field">
-                            <label>市場情緒</label>
-                            <input id="notesMood" type="text" placeholder="例如 樂觀" />
-                        </div>
-                        <div class="field">
-                            <label>參考指標</label>
-                            <input id="notesReference" type="text" placeholder="例如 MA20,成交量" />
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label>分析內容 <span style="color: red;">*</span></label>
-                        <textarea id="notesAnalysis" required placeholder="請輸入分析內容"></textarea>
-                    </div>
-                    <div class="field">
-                        <label>備註</label>
-                        <textarea id="notesNotes" placeholder="補充說明"></textarea>
-                    </div>
-
-                    <div class="notes-actions">
-                        <button type="submit" class="btn-primary">新增紀錄</button>
-                        <button type="button" id="btnNotesExport" class="btn-primary btn-secondary">下載 notes.csv</button>
-                        <button type="button" id="btnNotesReload" class="btn-primary btn-secondary">重新載入</button>
-                    </div>
-                    <p class="helper-text">資料來源固定使用 /data/notes.csv，新加入紀錄會暫存在本機，請下載後自行覆蓋。</p>
-                </form>
-
-                <div id="notesAddSummary"></div>
-                <div id="notesAddTable"></div>
-            </section>
-
-            <!-- 空白分頁 2 -->
-            <section id="extra2View" class="view-section" style="display:none">
-                <h2>瀏覽紀錄分析</h2>
-                <div class="form-grid">
-                    <div class="field">
-                        <label>股票代號</label>
-                        <select id="notesFilterCode">
-                            <option value="">全部</option>
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label>策略標籤</label>
-                        <select id="notesFilterTag">
-                            <option value="">全部</option>
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label>市場情緒</label>
-                        <select id="notesFilterMood">
-                            <option value="">全部</option>
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label>最低信心度</label>
-                        <select id="notesFilterConfidence">
-                            <option value="0">不限</option>
-                            <option value="1">1+</option>
-                            <option value="2">2+</option>
-                            <option value="3">3+</option>
-                            <option value="4">4+</option>
-                            <option value="5">5+</option>
-                            <option value="6">6+</option>
-                            <option value="7">7+</option>
-                            <option value="8">8+</option>
-                            <option value="9">9+</option>
-                            <option value="10">10</option>
-                        </select>
-                    </div>
+            <a class="article-card" href="articles.html#art-3" style="text-decoration:none; color:inherit;">
+                <span class="tag tag-tech">科技發展</span>
+                <div class="article-title">AI 生產力紅利的分配：誰真的受益了？</div>
+                <div class="article-excerpt">
+                    宏觀生產力數據尚未反映 AI 投資，但個別企業的獲利已大幅集中。
+                    這個落差本身就是一個值得深究的制度問題，而非單純的技術擴散時滯。
                 </div>
-
-                <div class="notes-actions">
-                    <button type="button" id="btnNotesExportBrowse" class="btn-primary btn-secondary">下載 notes.csv</button>
-                    <button type="button" id="btnNotesReloadBrowse" class="btn-primary btn-secondary">重新載入</button>
+                <div class="article-meta">
+                    <span>2025 · 09 月</span>
+                    <span>9 分鐘閱讀 →</span>
                 </div>
+            </a>
 
-                <div id="notesBrowseSummary"></div>
-                <div id="confidenceCalibration"></div>
-                <div id="notesBrowseTable"></div>
-            </section>
+            <a class="article-card" href="articles.html#art-4" style="text-decoration:none; color:inherit;">
+                <span class="tag tag-policy">公共政策</span>
+                <div class="article-title">能源轉型的財政算術：碳定價的政治經濟學</div>
+                <div class="article-excerpt">
+                    碳稅與碳交易的理論效率差異遠小於它們的政治可行性差異。
+                    理解這點，才能評估各國氣候政策的真實雄心與實際效果。
+                </div>
+                <div class="article-meta">
+                    <span>2025 · 07 月</span>
+                    <span>13 分鐘閱讀 →</span>
+                </div>
+            </a>
 
-        </section>
-    </main>
+            <a class="article-card" href="articles.html#art-5" style="text-decoration:none; color:inherit;">
+                <span class="tag tag-finance">金融制度</span>
+                <div class="article-title">台灣資本市場的深度問題：不是估值，是結構</div>
+                <div class="article-excerpt">
+                    「台股折價」的討論通常止於本益比比較。
+                    但折價的根源在於流動性提供者的結構、外資持股上限與法人治理文化，
+                    這些才是需要正面處理的問題。
+                </div>
+                <div class="article-meta">
+                    <span>2025 · 05 月</span>
+                    <span>10 分鐘閱讀 →</span>
+                </div>
+            </a>
 
-    <footer class="app-footer">
-        <p>台股分析系統 v2.0 | 資料僅供參考</p>
+            <a class="article-card" href="articles.html#art-6" style="text-decoration:none; color:inherit;">
+                <span class="tag tag-tech">科技發展</span>
+                <div class="article-title">平台管制的邊界：數位市場中的競爭法困境</div>
+                <div class="article-excerpt">
+                    傳統反壟斷框架以價格傷害消費者為核心，但平台競爭的損害形式是資料獨占、
+                    生態系封閉與創新窒息。制度的更新速度能否追上產業的演化速度？
+                </div>
+                <div class="article-meta">
+                    <span>2025 · 03 月</span>
+                    <span>12 分鐘閱讀 →</span>
+                </div>
+            </a>
+        </div>
+
+        <div style="text-align:center; margin-top: 40px;">
+            <a class="button" href="articles.html">查看全部文章 →</a>
+        </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- 關於我 -->
+    <div class="about-section" id="about">
+        <div class="about-inner">
+            <div class="about-left">
+                <div class="avatar-placeholder">🧑‍💻</div>
+                <div class="about-name">Thomas</div>
+                <div class="about-role">獨立研究者 · 觀點寫作者</div>
+                <div class="social-links">
+                    <a href="https://github.com" target="_blank" class="social-link">GitHub</a>
+                    <a href="#" class="social-link">聯絡我</a>
+                </div>
+            </div>
+
+            <div class="about-right">
+                <h2 style="position:relative; display:inline-block;">我的寫作立場</h2>
+                <p>
+                    我對公共政策、金融制度與科技發展如何影響社會長期運作充滿興趣。
+                    平時習慣從原始數據、制度設計與歷史脈絡出發，
+                    分析新聞背後被忽略的條件與限制。
+                </p>
+                <p>
+                    這個網站整理我的研究筆記、觀點文章與技術實作紀錄，
+                    希望提供一個理性、可驗證、能促進討論的空間。
+                    我不假裝自己沒有立場，但我嘗試讓立場透明、讓論據可查。
+                </p>
+
+                <ul class="belief-list">
+                    <li>
+                        <span class="icon">🔍</span>
+                        <span>觀點需要建立在可查驗的事實之上，而非情緒共鳴。</span>
+                    </li>
+                    <li>
+                        <span class="icon">⚖️</span>
+                        <span>每個政策都有取捨，「沒有代價的好政策」幾乎不存在。</span>
+                    </li>
+                    <li>
+                        <span class="icon">📐</span>
+                        <span>制度設計決定行為誘因，行為誘因決定結果，文化是結果不是原因。</span>
+                    </li>
+                    <li>
+                        <span class="icon">🕰️</span>
+                        <span>短期最優解與長期最優解往往不同，混淆兩者是政策討論最常見的謬誤。</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#home">首頁</a>
+                <a href="#opinions">觀點文章</a>
+                <a href="#topics">關注議題</a>
+                <a href="#about">關於我</a>
+                <a href="https://github.com" target="_blank">GitHub</a>
+            </div>
+            <div class="footer-copyright">
+                <p>Thomas · 獨立觀點，理性討論</p>
+                <p style="opacity: 0.5; margin-top: 6px;">
+                    本站所有文章均為個人觀點，不代表任何機構立場。
+                </p>
+            </div>
+        </div>
     </footer>
-</div>
-<script type="module" src="/static/js/app.js"></script>
+
+    <script>
+        // 平滑滾動
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+        });
+
+        // 捲動時的動畫效果
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.card, .article-card, .belief-list li').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+
 </body>
+
 </html>
